@@ -63,7 +63,7 @@
   // ---------- Zustand ----------
   const state = {
     tool: 'brush', color: '#e53935', hsv: [0, 0.75, 0.9], opacity: 1, size: 14, stamp: 'stern',
-    motif: null, pictureId: null, created: 0, dirty: false, category: 'tiere'
+    motif: null, pictureId: null, created: 0, dirty: false, category: 'neu'
   };
 
   // ---------- Bildschirme ----------
@@ -96,7 +96,7 @@
     if (state.category === 'vorlagen') return renderTemplates(g);
     for (const m of motifs.filter((x) => x.cat === state.category)) {
       const t = document.createElement('button'); t.className = 'tile'; t.setAttribute('aria-label', m.name);
-      t.innerHTML = motifSVG(m) + `<div class="name">${m.name}</div>`;
+      t.innerHTML = (m.png ? `<img src="${m.png}" alt="" loading="lazy">` : motifSVG(m)) + `<div class="name">${m.name}</div>`;
       t.onclick = () => openNew(m); g.appendChild(t);
     }
   }
@@ -131,12 +131,19 @@
   const bctx = beforeC.getContext('2d');
   let barrier = null; // Uint8Array: 1 = Konturpixel (Grenze für den Füll-Eimer)
 
+  const urlImgs = new Map();
+  function urlToImage(u) {
+    if (!urlImgs.has(u)) urlImgs.set(u, new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => { urlImgs.delete(u); rej(new Error('Bild ' + u)); }; i.src = u; }));
+    return urlImgs.get(u);
+  }
   async function drawOutline(m) {
     octx.setTransform(1, 0, 0, 1, 0, 0); octx.clearRect(0, 0, PW, PH);
     barrier = null;
     if (!m) return;
     if (m.tpl) { // importierte Vorlage: fertige, transparente Linien-Ebene
       try { const img = await blobToImage(m.tpl.outline); octx.drawImage(img, 0, 0, PW, PH); } catch (e) { console.warn('Vorlage nicht lesbar', e); return; }
+    } else if (m.png) { // detailreiches Bild-Motiv: fertige, transparente Linien-Ebene
+      try { const img = await urlToImage(m.png); octx.drawImage(img, 0, 0, PW, PH); } catch (e) { console.warn('Motiv nicht ladbar', e); return; }
     } else {
       octx.setTransform(MOTIF_SCALE, 0, 0, MOTIF_SCALE, 0, 0);
       octx.lineWidth = OUTLINE_WIDTH; octx.lineCap = 'round'; octx.lineJoin = 'round'; octx.strokeStyle = '#111';
@@ -716,7 +723,7 @@
         <div class="setting"><span>Nur der Apple Pencil malt<br><small>Finger nur zum Zoomen und Drehen</small></span><button class="switch ${settings.pencilOnly ? 'on' : ''}" data-s="pencilOnly" aria-label="Nur Apple Pencil"></button></div>
         <div class="setting"><span>Druckstärke vom Apple Pencil nutzen</span><button class="switch ${settings.pressure ? 'on' : ''}" data-s="pressure" aria-label="Druckstärke"></button></div>
         <div class="row"><button class="btn danger" data-a="clear">🗑️ Alle Bilder löschen</button><button class="btn primary" data-a="close">Fertig</button></div>
-        <div class="small-note">Alle Bilder bleiben nur auf diesem iPad. Keine Werbung, keine Internetverbindung nötig.<br>Malbuch Version 1.1</div>`);
+        <div class="small-note">Alle Bilder bleiben nur auf diesem iPad. Keine Werbung, keine Internetverbindung nötig.<br>Malbuch Version 1.2</div>`);
       c.querySelectorAll('[data-m]').forEach((b) => b.onclick = () => { settings.colorMode = b.dataset.m; saveSettings(); updateColorUI(); render(); });
       c.querySelectorAll('[data-s]').forEach((b) => b.onclick = () => { settings[b.dataset.s] = !settings[b.dataset.s]; saveSettings(); render(); });
       c.querySelector('[data-a=close]').onclick = closeModal;
@@ -759,6 +766,58 @@
       $('#mc').onclick = closeModal;
     }
   }
+
+  // ---------- Apple Pencil auf Knöpfen ----------
+  // iPadOS/Safari löst bei Pencil-Tipps auf Bedienelementen oft KEIN 'click' aus (kleinste Bewegung
+  // der Spitze gilt als Wisch-/Scribble-Geste; zusammen mit touch-action:none). Darum erkennen wir
+  // Pencil-Tipps selbst über Pointer-Events und lösen den Klick aus. Ein evtl. trotzdem folgender
+  // echter Klick wird verworfen, damit nichts doppelt passiert. Schieberegler bekommen Pencil-Ziehen.
+  (function penSupport() {
+    const CTRL = 'button, [role=button], a[href], summary, input[type=checkbox], input[type=radio]';
+    let down = null, synth = null;
+    const isPen = (e) => e.pointerType === 'pen';
+    document.addEventListener('pointerdown', (e) => {
+      if (!isPen(e)) return;
+      const range = e.target.closest && e.target.closest('input[type=range]');
+      if (range && !range.disabled) { startRange(range, e); return; }
+      const el = e.target.closest && e.target.closest(CTRL);
+      down = el && !el.disabled ? { el, id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp } : null;
+    }, true);
+    document.addEventListener('pointerup', (e) => {
+      if (!isPen(e) || !down || down.id !== e.pointerId) return;
+      const d = down; down = null;
+      if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 24 || e.timeStamp - d.t > 1500) return;
+      const hit = document.elementFromPoint(e.clientX, e.clientY);
+      const el = hit && hit.closest(CTRL);
+      if (el !== d.el || !el.isConnected || el.disabled) return;
+      synth = { el, t: performance.now() };
+      el.click(); // pointerup des Stifts zählt als Nutzer-Geste (Dateiauswahl funktioniert)
+    }, true);
+    document.addEventListener('pointercancel', (e) => { if (down && down.id === e.pointerId) down = null; }, true);
+    document.addEventListener('click', (e) => {
+      if (!synth || !e.isTrusted) return;
+      if (performance.now() - synth.t < 800) { e.preventDefault(); e.stopImmediatePropagation(); }
+      synth = null;
+    }, true);
+    function startRange(r, e) {
+      e.preventDefault();
+      try { r.setPointerCapture(e.pointerId); } catch (er) { /* */ }
+      const set = (ev) => {
+        const b = r.getBoundingClientRect(), min = +r.min || 0, max = r.max === '' ? 100 : +r.max, step = +r.step || 1;
+        const f = Math.min(1, Math.max(0, (ev.clientX - b.left - 19) / Math.max(1, b.width - 38)));
+        const v = Math.round((min + f * (max - min)) / step) * step;
+        if (+r.value !== v) { r.value = v; r.dispatchEvent(new Event('input', { bubbles: true })); }
+      };
+      set(e);
+      const mv = (ev) => { if (ev.pointerId === e.pointerId) { ev.preventDefault(); set(ev); } };
+      const up = (ev) => {
+        if (ev.pointerId !== e.pointerId) return;
+        r.removeEventListener('pointermove', mv); r.removeEventListener('pointerup', up); r.removeEventListener('pointercancel', up);
+        r.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+      r.addEventListener('pointermove', mv); r.addEventListener('pointerup', up); r.addEventListener('pointercancel', up);
+    }
+  })();
 
   // ---------- Verkabelung ----------
   $('#btnGallery').onclick = () => { show('gallery'); renderGallery(); };

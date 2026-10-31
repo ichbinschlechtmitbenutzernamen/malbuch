@@ -28,7 +28,7 @@ Kostenlos, ohne Werbung, ohne Abo, ohne Internetverbindung im Betrieb. Alle Bild
 7. Die App einmal vom Home-Bildschirm starten, solange WLAN da ist. Danach läuft sie offline.
 
 ## Updates
-Nach Änderungen in `sw.js` die Zeile `const CACHE = 'malbuch-v1.1.0'` hochzählen. Sonst behält das iPad die alte Version im Cache.
+Nach Änderungen in `sw.js` die Zeile `const CACHE = 'malbuch-v1.2.0'` hochzählen. Sonst behält das iPad die alte Version im Cache.
 
 ## Hinweise
 - Die Bilder der Home-Bildschirm-App sind von Safari getrennt gespeichert. Wird das App-Symbol gelöscht, sind auch die Bilder weg. Wichtige Bilder vorher als PDF sichern.
@@ -43,3 +43,7 @@ Nach Änderungen in `sw.js` die Zeile `const CACHE = 'malbuch-v1.1.0'` hochzähl
 4. Name eingeben → **Speichern**. Die Vorlage liegt nur auf diesem iPad (IndexedDB), nichts wird hochgeladen.
 - Am besten klappen klare, schwarze Linienbilder (Ausmalbilder, eigene Zeichnungen, gescannte Seiten). Fotos von Papier vorher gerade und hell aufnehmen.
 - Bitte nur Vorlagen verwenden, die man privat nutzen darf (z. B. selbst gezeichnet oder frei lizenziert). Die App bringt keine fremden Bilder mit.
+
+## Version 1.2
+- Apple Pencil bedient jetzt alle Knöpfe, Farben, Farbrad, Regler, Stempel, Galerie, Dialoge und das Eltern-Tastenfeld (eigene Pencil-Tipp-Erkennung über Pointer-Events, weil iPadOS bei Pencil-Tipps oft kein `click` auslöst).
+- Test-Kategorie **„Neue Motive (Test)“** (`js/motifs3.js`, Bilder in `motifs/`): 6 detailreiche, eigene Strichzeichnungen im Stil von Zeichentrickserien der 90er (KI-erzeugt, keine Figuren aus bestehenden Serien), umgewandelt in die transparente Kontur-Ebene (1200×1600).

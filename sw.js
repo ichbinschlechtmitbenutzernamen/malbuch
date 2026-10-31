@@ -1,5 +1,5 @@
 /* Malbuch Service Worker: speichert alle Dateien für die Offline-Nutzung. */
-const CACHE = 'malbuch-v1.1.0';
+const CACHE = 'malbuch-v1.2.0';
 const FILES = [
   './',
   './index.html',
@@ -8,6 +8,13 @@ const FILES = [
   './js/app.js',
   './js/motifs.js',
   './js/motifs2.js',
+  './js/motifs3.js',
+  './motifs/tiere-baer.png',
+  './motifs/feen-zaubermaedchen.png',
+  './motifs/fantasie-drache.png',
+  './motifs/natur-feengarten.png',
+  './motifs/fahrzeuge-zug.png',
+  './motifs/jahreszeiten-winter.png',
   './js/import.js',
   './vendor/jspdf.umd.min.js',
   './vendor/pdfjs/pdf.min.mjs',
