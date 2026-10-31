@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Malbuch">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#ffd54f">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; worker-src 'self'">
+<title>Malbuch</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Startseite: Kategorien und Motive -->
+  <section id="home" class="screen active" aria-label="Motive">
+    <header class="topbar">
+      <div class="brand"><span class="logo">🎨</span><span>Malbuch</span></div>
+      <div class="spacer"></div>
+      <button id="btnGallery" class="pill" aria-label="Meine Bilder"><span class="ico">🖼️</span><span class="lbl">Meine Bilder</span></button>
+      <button id="btnSettings" class="round small" aria-label="Einstellungen für Eltern">⚙️</button>
+    </header>
+    <nav id="cats" class="cats"></nav>
+    <div id="motifGrid" class="grid scroll"></div>
+  </section>
+
+  <!-- Galerie -->
+  <section id="gallery" class="screen" aria-label="Meine Bilder">
+    <header class="topbar">
+      <button class="round btnHome" aria-label="Zurück">🏠</button>
+      <div class="brand"><span class="logo">🖼️</span><span>Meine Bilder</span></div>
+      <div class="spacer"></div>
+    </header>
+    <div id="galleryGrid" class="grid scroll"></div>
+    <div id="galleryEmpty" class="empty hidden"><div class="big">🖍️</div><div>Noch keine Bilder. Such dir ein Motiv aus!</div></div>
+  </section>
+
+  <!-- Malen -->
+  <section id="editor" class="screen" aria-label="Malen">
+    <div class="ebar">
+      <button id="btnBack" class="round" aria-label="Fertig">🏠</button>
+      <div class="spacer"></div>
+      <button id="btnUndo" class="round arrow" aria-label="Rückgängig"><svg viewBox="0 0 48 48"><path d="M10 18h20a10 10 0 0 1 0 20h-8"/><path d="M18 9l-9 9 9 9"/></svg></button>
+      <button id="btnRedo" class="round arrow" aria-label="Wiederholen"><svg viewBox="0 0 48 48"><path d="M38 18H18a10 10 0 0 0 0 20h8"/><path d="M30 9l9 9-9 9"/></svg></button>
+      <div class="spacer"></div>
+      <button id="btnFit" class="round" aria-label="Ansicht zurücksetzen"><svg viewBox="0 0 48 48" class="fit"><rect x="13" y="9" width="22" height="30" rx="3"/><path d="M4 14V4h10M34 4h10v10M44 34v10H34M14 44H4V34"/></svg></button>
+      <button id="btnPdf" class="round" aria-label="Als PDF speichern (Eltern)">📄<span class="lock">🔒</span></button>
+    </div>
+
+    <div id="tools" class="tools" role="toolbar">
+      <button data-tool="brush" aria-label="Pinsel"><span class="ico">🖌️</span><span class="lbl">Pinsel</span></button>
+      <button data-tool="crayon" aria-label="Buntstift"><span class="ico">🖍️</span><span class="lbl">Buntstift</span></button>
+      <button data-tool="marker" aria-label="Filzstift"><span class="ico">🖊️</span><span class="lbl">Filzstift</span></button>
+      <button data-tool="stamp" aria-label="Stempel"><span class="ico" id="stampIco"></span><span class="lbl">Stempel</span></button>
+      <button data-tool="fill" aria-label="Füll-Eimer"><span class="ico">🪣</span><span class="lbl">Füllen</span></button>
+      <button data-tool="eraser" aria-label="Radierer"><span class="ico">🧽</span><span class="lbl">Radierer</span></button>
+    </div>
+
+    <div id="viewport">
+      <div id="stage">
+        <canvas id="paint"></canvas>
+        <canvas id="strokeLayer"></canvas>
+        <canvas id="outline"></canvas>
+      </div>
+      <div id="stampPop" class="pop hidden"></div>
+      <div id="toast" class="toast hidden"></div>
+    </div>
+
+    <div id="colors" class="colors">
+      <div class="modeSwitch" role="tablist">
+        <button data-mode="simple" aria-label="Einfache Farben"><span class="dots"><i style="background:#e53935"></i><i style="background:#fdd835"></i><i style="background:#1e88e5"></i></span></button>
+        <button data-mode="advanced" aria-label="Farbrad"><span class="wheelIco"></span></button>
+      </div>
+      <div id="simplePanel" class="panel">
+        <div id="swatches" class="swatches"></div>
+        <div id="sizePresets" class="sizes"></div>
+      </div>
+      <div id="advPanel" class="panel hidden">
+        <div class="wheelWrap"><canvas id="wheel" width="400" height="400"></canvas><div id="wheelKnob"></div></div>
+        <div class="sliders">
+          <label><span class="sl-ico" aria-hidden="true">☀️</span><span class="sl-l">Helligkeit</span><input id="slBright" type="range" min="0" max="100" value="100"></label>
+          <label><span class="sl-ico" aria-hidden="true">💧</span><span class="sl-l">Deckkraft</span><input id="slAlpha" type="range" min="10" max="100" value="100"></label>
+          <label><span class="sl-ico" aria-hidden="true">⚫</span><span class="sl-l">Größe</span><input id="slSize" type="range" min="2" max="120" value="16"></label>
+        </div>
+      </div>
+      <div class="preview"><div id="previewDot"></div></div>
+    </div>
+  </section>
+
+  <!-- Vorlage importieren (nur Eltern) -->
+  <section id="importer" class="screen" aria-label="Vorlage importieren">
+    <header class="topbar">
+      <button id="impCancel" class="round" aria-label="Abbrechen">✖️</button>
+      <div class="brand"><span class="logo">📥</span><span>Vorlage importieren</span></div>
+      <div class="spacer"></div>
+      <button id="impSave" class="pill save" aria-label="Vorlage speichern"><span class="ico">✅</span><span class="lbl">Speichern</span></button>
+    </header>
+    <div class="impBody">
+      <div class="impPreview" id="impPreviewWrap">
+        <canvas id="impCanvas" width="1200" height="1600"></canvas>
+        <div id="impBusy" class="impBusy hidden">⏳</div>
+      </div>
+      <div class="impSide">
+        <div class="seg impView"><button data-v="lines" class="sel">✏️ Linien</button><button data-v="orig">🖼️ Original</button></div>
+        <label class="impSl"><span class="sl-l">◐ Linien erkennen (Schwelle): <b id="impThrVal"></b></span>
+          <input id="impThr" type="range" min="20" max="240" value="150"></label>
+        <label class="impSl"><span class="sl-l">✚ Linien dicker machen: <b id="impThickVal"></b></span>
+          <input id="impThick" type="range" min="0" max="4" value="1"></label>
+        <label class="impSl"><span class="sl-l">✧ Kleine Flecken entfernen: <b id="impSpeckVal"></b></span>
+          <input id="impSpeck" type="range" min="0" max="3" value="1"></label>
+        <div class="row tight">
+          <button id="impRotate" class="btn" aria-label="Drehen">↻ Drehen</button>
+          <button id="impAuto" class="btn" aria-label="Automatisch einstellen">✨ Automatisch</button>
+        </div>
+        <div id="impPages" class="row tight hidden">
+          <button id="impPrev" class="btn" aria-label="Vorherige Seite">◀</button>
+          <span id="impPageLbl" class="pageLbl"></span>
+          <button id="impNext" class="btn" aria-label="Nächste Seite">▶</button>
+        </div>
+        <label class="impName"><span class="sl-l">Name der Vorlage</span><input id="impName" type="text" maxlength="40" autocomplete="off"></label>
+        <div id="impHint" class="small-note"></div>
+      </div>
+    </div>
+  </section>
+
+  <input id="fileInput" type="file" accept="image/*,application/pdf,.pdf,.heic,.heif" class="hidden">
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="card" id="modalCard"></div></div>
+</div>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="js/motifs.js"></script>
+<script src="js/motifs2.js"></script>
+<script src="js/app.js"></script>
+<script src="js/import.js"></script>
+</body>
+</html>
