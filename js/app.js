@@ -63,7 +63,7 @@
   // ---------- Zustand ----------
   const state = {
     tool: 'brush', color: '#e53935', hsv: [0, 0.75, 0.9], opacity: 1, size: 14, stamp: 'stern',
-    motif: null, pictureId: null, created: 0, dirty: false, category: 'neu'
+    motif: null, pictureId: null, created: 0, dirty: false, category: 'tiere'
   };
 
   // ---------- Bildschirme ----------
@@ -723,7 +723,7 @@
         <div class="setting"><span>Nur der Apple Pencil malt<br><small>Finger nur zum Zoomen und Drehen</small></span><button class="switch ${settings.pencilOnly ? 'on' : ''}" data-s="pencilOnly" aria-label="Nur Apple Pencil"></button></div>
         <div class="setting"><span>Druckstärke vom Apple Pencil nutzen</span><button class="switch ${settings.pressure ? 'on' : ''}" data-s="pressure" aria-label="Druckstärke"></button></div>
         <div class="row"><button class="btn danger" data-a="clear">🗑️ Alle Bilder löschen</button><button class="btn primary" data-a="close">Fertig</button></div>
-        <div class="small-note">Alle Bilder bleiben nur auf diesem iPad. Keine Werbung, keine Internetverbindung nötig.<br>Malbuch Version 1.2</div>`);
+        <div class="small-note">Alle Bilder bleiben nur auf diesem iPad. Keine Werbung, keine Internetverbindung nötig.<br>Malbuch Version 1.3</div>`);
       c.querySelectorAll('[data-m]').forEach((b) => b.onclick = () => { settings.colorMode = b.dataset.m; saveSettings(); updateColorUI(); render(); });
       c.querySelectorAll('[data-s]').forEach((b) => b.onclick = () => { settings[b.dataset.s] = !settings[b.dataset.s]; saveSettings(); render(); });
       c.querySelector('[data-a=close]').onclick = closeModal;
