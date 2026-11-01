@@ -10,7 +10,9 @@
     { id: 'superhelden', name: 'Superhelden', icon: '🦸' },
     { id: 'einhoerner', name: 'Einhörner', icon: '🦄' },
     { id: 'weltraum', name: 'Weltraum', icon: '🚀' },
-    { id: 'ballerina', name: 'Ballerina', icon: '🩰' });
+    { id: 'ballerina', name: 'Ballerina', icon: '🩰' },
+    { id: 'mandalas', name: 'Mandalas', icon: '🌀' },
+    { id: 'landschaften', name: 'Landschaften', icon: '🏞️' });
   // IDs der ersten 6 bleiben gleich (gespeicherte Bilder verweisen darauf)
   const list = [
     ['neu-baer', 'tiere', 'Herzbärchen', 'tiere-baer'],
@@ -28,7 +30,18 @@
     ['weltraum-astronaut', 'weltraum', 'Kleiner Astronaut', 'weltraum-astronaut'],
     ['weltraum-alien', 'weltraum', 'Freundliches Alien', 'weltraum-alien'],
     ['ballett-maedchen', 'ballerina', 'Ballerina', 'ballerina-maedchen'],
-    ['ballett-hase', 'ballerina', 'Hasen-Ballerina', 'ballerina-hase']
+    ['ballett-hase', 'ballerina', 'Hasen-Ballerina', 'ballerina-hase'],
+    // Mandalas: von einfach (große Flächen) bis detailreich
+    ['mandala-blume', 'mandalas', 'Blumen-Mandala', 'mandala-blume'],
+    ['mandala-herz', 'mandalas', 'Herz-Mandala', 'mandala-herz'],
+    ['mandala-schmetterling', 'mandalas', 'Schmetterling', 'mandala-schmetterling'],
+    ['mandala-stern', 'mandalas', 'Mond & Sterne', 'mandala-stern'],
+    ['mandala-ornament', 'mandalas', 'Ornament', 'mandala-ornament'],
+    ['landschaft-bauernhof', 'landschaften', 'Bauernhof', 'landschaft-bauernhof'],
+    ['landschaft-strand', 'landschaften', 'Am Strand', 'landschaft-strand'],
+    ['landschaft-bergsee', 'landschaften', 'Bergsee', 'landschaft-bergsee'],
+    ['landschaft-wald', 'landschaften', 'Waldbach', 'landschaft-wald'],
+    ['landschaft-unterwasser', 'landschaften', 'Unterwasserwelt', 'landschaft-unterwasser']
   ].map(([id, cat, name, file]) => ({ id, cat, name, png: 'motifs/' + file + '.png' }));
   D.motifs.unshift(...list);
 })();

@@ -1,5 +1,5 @@
 /* Malbuch Service Worker: speichert alle Dateien für die Offline-Nutzung. */
-const CACHE = 'malbuch-v1.3.0';
+const CACHE = 'malbuch-v1.4.0';
 const FILES = [
   './',
   './index.html',
@@ -25,6 +25,16 @@ const FILES = [
   './motifs/weltraum-alien.png',
   './motifs/ballerina-maedchen.png',
   './motifs/ballerina-hase.png',
+  './motifs/mandala-blume.png',
+  './motifs/mandala-herz.png',
+  './motifs/mandala-schmetterling.png',
+  './motifs/mandala-stern.png',
+  './motifs/mandala-ornament.png',
+  './motifs/landschaft-bauernhof.png',
+  './motifs/landschaft-strand.png',
+  './motifs/landschaft-bergsee.png',
+  './motifs/landschaft-wald.png',
+  './motifs/landschaft-unterwasser.png',
   './js/import.js',
   './vendor/jspdf.umd.min.js',
   './vendor/pdfjs/pdf.min.mjs',

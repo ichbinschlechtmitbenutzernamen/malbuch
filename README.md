@@ -28,7 +28,7 @@ Kostenlos, ohne Werbung, ohne Abo, ohne Internetverbindung im Betrieb. Alle Bild
 7. Die App einmal vom Home-Bildschirm starten, solange WLAN da ist. Danach läuft sie offline.
 
 ## Updates
-Nach Änderungen in `sw.js` die Zeile `const CACHE = 'malbuch-v1.3.0'` hochzählen. Sonst behält das iPad die alte Version im Cache.
+Nach Änderungen in `sw.js` die Zeile `const CACHE = 'malbuch-v1.4.0'` hochzählen. Sonst behält das iPad die alte Version im Cache.
 
 ## Hinweise
 - Die Bilder der Home-Bildschirm-App sind von Safari getrennt gespeichert. Wird das App-Symbol gelöscht, sind auch die Bilder weg. Wichtige Bilder vorher als PDF sichern.
@@ -52,3 +52,8 @@ Nach Änderungen in `sw.js` die Zeile `const CACHE = 'malbuch-v1.3.0'` hochzähl
 - 10 neue detailreiche Motive (eigene Figuren) in neuen Kategorien: Superhelden 🦸 (3), Einhörner 🦄 (3), Weltraum 🚀 (2), Ballerina 🩰 (2).
 - Die 6 Test-Motive stehen jetzt vorne in ihren normalen Kategorien (Tiere, Feen, Fantasie, Natur, Fahrzeuge, Jahreszeiten); die Kategorie „Neue Motive (Test)" ist entfernt. Fantasie hat jetzt das Symbol 🐉.
 - Insgesamt 76 Motive (60 gezeichnete + 16 Bild-Motive). Lange Linien am Bildrand werden bei der Umwandlung bis zum Rand verlängert, damit Gebäude etc. eigene Flächen bilden.
+
+## Version 1.4
+- Neue Kategorie **Mandalas** 🌀 (5): Blumen-Mandala und Herz-Mandala (einfach, große Flächen), Schmetterling und Mond & Sterne (mittel), Ornament (detailreich, für Ältere).
+- Neue Kategorie **Landschaften** 🏞️ (5): Bauernhof, Am Strand, Bergsee, Waldbach, Unterwasserwelt.
+- Insgesamt 86 Motive (60 gezeichnete + 26 Bild-Motive).
