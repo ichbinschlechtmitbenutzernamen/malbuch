@@ -28,7 +28,7 @@ Kostenlos, ohne Werbung, ohne Abo, ohne Internetverbindung im Betrieb. Alle Bild
 7. Die App einmal vom Home-Bildschirm starten, solange WLAN da ist. Danach läuft sie offline.
 
 ## Updates
-Nach Änderungen in `sw.js` die Zeile `const CACHE = 'malbuch-v1.4.0'` hochzählen. Sonst behält das iPad die alte Version im Cache.
+Nach Änderungen in `sw.js` die Zeile `const CACHE = 'malbuch-v1.4.1'` hochzählen. Sonst behält das iPad die alte Version im Cache.
 
 ## Hinweise
 - Die Bilder der Home-Bildschirm-App sind von Safari getrennt gespeichert. Wird das App-Symbol gelöscht, sind auch die Bilder weg. Wichtige Bilder vorher als PDF sichern.
@@ -57,3 +57,6 @@ Nach Änderungen in `sw.js` die Zeile `const CACHE = 'malbuch-v1.4.0'` hochzähl
 - Neue Kategorie **Mandalas** 🌀 (5): Blumen-Mandala und Herz-Mandala (einfach, große Flächen), Schmetterling und Mond & Sterne (mittel), Ornament (detailreich, für Ältere).
 - Neue Kategorie **Landschaften** 🏞️ (5): Bauernhof, Am Strand, Bergsee, Waldbach, Unterwasserwelt.
 - Insgesamt 86 Motive (60 gezeichnete + 26 Bild-Motive).
+
+## Version 1.4.1
+- Fehler behoben: Die Stempel-Auswahl ließ sich auf dem iPad nur mit dem Apple Pencil bedienen, nicht mit dem Finger. Ursache: Die Malfläche verhinderte jeden `touchstart` (gegen Scrollen/Zoomen), auch im Stempel-Popover, das auf der Malfläche liegt. Safari löst dann für Finger-Tipps kein `click` aus. Jetzt ist das Popover davon ausgenommen. Finger, Pencil und Maus wählen jeden Stempel genau einmal (Test `test7.js` mit iPad-Emulation).

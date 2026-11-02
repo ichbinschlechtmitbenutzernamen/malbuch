@@ -1,5 +1,5 @@
 /* Malbuch Service Worker: speichert alle Dateien für die Offline-Nutzung. */
-const CACHE = 'malbuch-v1.4.0';
+const CACHE = 'malbuch-v1.4.1';
 const FILES = [
   './',
   './index.html',

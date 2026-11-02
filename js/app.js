@@ -498,7 +498,9 @@
   // Seite darf nicht scrollen/zoomen, keine Lupen/Kontextmenüs
   ['gesturestart', 'gesturechange', 'gestureend'].forEach((t) => document.addEventListener(t, (e) => e.preventDefault(), { passive: false }));
   document.addEventListener('touchmove', (e) => { if (!e.target.closest('.scroll,.cats,.card')) e.preventDefault(); }, { passive: false });
-  viewport.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
+  // Wichtig: NICHT im Stempel-Popover (.pop) verhindern. iPad-Safari unterdrückt sonst bei
+  // Finger-Tipps den 'click' auf den Stempel-Knöpfen (der Pencil ging nur dank penSupport).
+  viewport.addEventListener('touchstart', (e) => { if (!e.target.closest('.pop')) e.preventDefault(); }, { passive: false });
   document.addEventListener('contextmenu', (e) => e.preventDefault());
   document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
   document.addEventListener('selectstart', (e) => e.preventDefault());
